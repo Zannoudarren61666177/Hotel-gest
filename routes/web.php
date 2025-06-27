@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\UserController;
@@ -17,7 +16,25 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\HomeController;
 
+Route::get('/', [HomeController::class, 'index'])->name('home');
+// (optionnel) Pour accéder aussi via /home
+Route::get('/home', [HomeController::class, 'index']);
+
+// Route de recherche d'hôtel
+Route::get('/hotels/recherche', [HotelController::class, 'recherche'])->name('hotels.recherche');
+
+// Route pour le sélecteur de langue (POST pour changer la langue)
+Route::post('/lang/switch', function (\Illuminate\Http\Request $request) {
+    $locale = $request->input('locale', 'fr');
+    session(['locale' => $locale]);
+    app()->setLocale($locale);
+    return back();
+})->name('lang.switch');
+
+// Vos routes resource existantes
+//Route::resource('home', HomeController::class);
 Route::resource('hotels', HotelController::class);
 Route::resource('users', UserController::class);
 Route::resource('rooms', RoomController::class);

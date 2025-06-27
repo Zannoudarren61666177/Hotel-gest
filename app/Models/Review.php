@@ -9,6 +9,12 @@ class Review extends Model
 {
     use HasFactory;
 
+    // Pour autoriser le remplissage en masse (mass assignment)
+    protected $fillable = [
+        'user_id', 'hotel_id', 'room_id',
+        'commentaire', 'note', 'statut', 'date'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
