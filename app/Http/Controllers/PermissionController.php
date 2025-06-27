@@ -2,36 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Permission;
+use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
     public function index()
     {
-        return Permission::all();
+        $permissions = Permission::all();
+        return view('permissions.index', compact('permissions'));
+    }
+
+    public function create()
+    {
+        return view('permissions.create');
     }
 
     public function store(Request $request)
     {
-        return Permission::create($request->all());
+        Permission::create($request->all());
+        return redirect()->route('permissions.index');
     }
 
-    public function show($id)
+    public function show(Permission $permission)
     {
-        return Permission::findOrFail($id);
+        return view('permissions.show', compact('permission'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(Permission $permission)
     {
-        $permission = Permission::findOrFail($id);
+        return view('permissions.edit', compact('permission'));
+    }
+
+    public function update(Request $request, Permission $permission)
+    {
         $permission->update($request->all());
-        return $permission;
+        return redirect()->route('permissions.index');
     }
 
-    public function destroy($id)
+    public function destroy(Permission $permission)
     {
-        Permission::destroy($id);
-        return response()->json(['message' => 'Supprimé avec succès']);
+        $permission->delete();
+        return redirect()->route('permissions.index');
     }
 }

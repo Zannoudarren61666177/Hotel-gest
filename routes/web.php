@@ -22,7 +22,7 @@ Route::resource('hotels', HotelController::class);
 Route::resource('users', UserController::class);
 Route::resource('rooms', RoomController::class);
 Route::resource('equipements', EquipementController::class);
-Route::resource('room-maintenances', RoomMaintenanceController::class);
+Route::resource('room_maintenances', RoomMaintenanceController::class);
 Route::resource('reservations', ReservationController::class);
 Route::resource('payments', PaymentController::class);
 Route::resource('services', ServiceController::class);
