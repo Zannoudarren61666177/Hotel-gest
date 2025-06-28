@@ -17,6 +17,7 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\HomeController;
+require __DIR__.'/auth.php';
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 // (optionnel) Pour accéder aussi via /home
@@ -32,6 +33,8 @@ Route::post('/lang/switch', function (\Illuminate\Http\Request $request) {
     app()->setLocale($locale);
     return back();
 })->name('lang.switch');
+
+
 
 // Vos routes resource existantes
 //Route::resource('home', HomeController::class);

@@ -3,23 +3,41 @@
 <head>
     <title>Gestion Hôtels</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+        .input-group-text {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            padding: 0.45em 0.7em;
+            display: flex;
+            align-items: center;
+        }
+        .form-control {
+            border-radius: 0 4px 4px 0;
+        }
+        @media (max-width: 600px) {
+            .input-group { width: 100%; }
+            .form-control { width: 100%; }
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <a href="{{ route('hotels.index') }}">Hôtels</a>
-        <!-- Ajoute d'autres menus ici -->
+    @yield('content')
 
-        <!-- Sélecteur de langue -->
-        <form action="{{ route('lang.switch') }}" method="POST" style="display:inline; float: right; margin-left: 1em;">
-            @csrf
-            <select name="locale" onchange="this.form.submit()" style="padding: 0.25em;">
-                <option value="fr" @if(app()->getLocale() === 'fr') selected @endif>Français</option>
-                <option value="en" @if(app()->getLocale() === 'en') selected @endif>English</option>
-            </select>
-        </form>
-    </nav>
-    <main>
-        @yield('content')
-    </main>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Langue française pour Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script>
+    flatpickr("#date_arrivee", { dateFormat: "d/m/Y", locale: "fr" });
+    flatpickr("#date_depart", { dateFormat: "d/m/Y", locale: "fr" });
+    </script>
 </body>
 </html>
