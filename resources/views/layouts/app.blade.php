@@ -26,6 +26,15 @@
             .input-group { width: 100%; }
             .form-control { width: 100%; }
         }
+        /* ======= AJOUT POUR TEXTE EN NOIR ======= */
+        .form-control,
+        .form-select {
+            color: #111 !important;
+        }
+        .form-control::placeholder {
+            color: #111 !important;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
