@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <title>Gestion Hôtels</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title', 'Gestion Hôtels')</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -26,7 +28,7 @@
             .input-group { width: 100%; }
             .form-control { width: 100%; }
         }
-        /* ======= AJOUT POUR TEXTE EN NOIR ======= */
+        /* Pour texte en noir */
         .form-control,
         .form-select {
             color: #111 !important;
@@ -36,9 +38,28 @@
             opacity: 1;
         }
     </style>
+    @stack('styles')
 </head>
 <body>
-    @yield('content')
+    {{-- Header déplacé dans chaque page via @include('partials.header-home') --}}
+
+    <!-- Flash messages -->
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    <!-- Contenu principal -->
+    <main>
+        @yield('content')
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; {{ date('Y') }} Gestion Hôtels</p>
+    </footer>
 
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -48,5 +69,6 @@
     flatpickr("#date_arrivee", { dateFormat: "d/m/Y", locale: "fr" });
     flatpickr("#date_depart", { dateFormat: "d/m/Y", locale: "fr" });
     </script>
+    @stack('scripts')
 </body>
 </html>
