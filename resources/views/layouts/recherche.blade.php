@@ -1,11 +1,14 @@
-
-
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>@yield('title', 'Authentification')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Flatpickr CSS (pour les dates) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Styles généraux -->
     <style>
         body {
             background: #f3f3f3;
@@ -20,7 +23,6 @@
             align-items: center;
             justify-content: space-between;
             padding-left: 24px;
-            /* pas de padding-top/bottom ici */
         }
         .header-logo img {
             height: 28px;
@@ -47,7 +49,7 @@
             min-height: calc(100vh - 124px);
             background: #fff;
             margin: 0 auto;
-            padding: 0; /* Aucun padding */
+            padding: 0;
         }
         footer {
             background: #e0e0e0;
@@ -76,6 +78,48 @@
         .footer-link:hover {
             background: #5a518c;
         }
+
+        /* Styles formulaire recherche et Flatpickr fix */
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+        .input-group-text {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            padding: 0.45em 0.7em;
+            display: flex;
+            align-items: center;
+        }
+        .form-control {
+            border-radius: 0 4px 4px 0;
+            color: #111 !important;
+        }
+        .form-select {
+            color: #111 !important;
+        }
+        .form-control::placeholder {
+            color: #111 !important;
+            opacity: 1;
+        }
+        @media (max-width: 600px) {
+            .input-group { width: 100%; }
+            .form-control { width: 100%; }
+        }
+
+        /* Fix Flatpickr SVG géant */
+        .flatpickr-calendar svg,
+        .flatpickr-calendar .flatpickr-prev-month svg,
+        .flatpickr-calendar .flatpickr-next-month svg {
+            width: 17px !important;
+            height: 17px !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            display: inline-block;
+            vertical-align: middle;
+        }
     </style>
     @stack('styles')
 </head>
@@ -87,6 +131,7 @@
         </div>
         <nav class="header-nav">
             <a href="{{ url('/home') }}" class="header-link">Accueil</a>
+            {{-- Ajoute d'autres liens ici si besoin --}}
         </nav>
     </header>
     <main>
@@ -100,7 +145,10 @@
             <a href="#" class="footer-link">Politique de confidentialité</a>
         </div>
     </footer>
+
+    <!-- Flatpickr JS (toujours inclus, mais n'a aucun effet si pas utilisé) -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
     @stack('scripts')
 </body>
 </html>
-

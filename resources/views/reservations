@@ -1,0 +1,106 @@
+@extends('layouts.app')
+
+@section('content')
+<style>
+    .room-card {
+        max-width: 900px;
+        margin: 2.5rem auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 18px #0001;
+        overflow: hidden;
+        padding: 0;
+    }
+    .room-gallery {
+        width: 100%;
+        max-height: 340px;
+        overflow-x: auto;
+        display: flex;
+        gap: 8px;
+        background: #f3f6fa;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+    .room-gallery img {
+        border-radius: 8px;
+        height: 220px;
+        object-fit: cover;
+        box-shadow: 0 2px 8px #0001;
+    }
+    .room-details {
+        padding: 2rem;
+    }
+    .equipments-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.2rem 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .equip-icon {
+        color: #0071c2;
+        margin-right: 0.5rem;
+    }
+    .room-price-box {
+        background: #f1f8ff;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #0071c2;
+        margin-bottom: 2rem;
+    }
+    .reserve-btn-box {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+    @media (max-width: 700px) {
+        .room-details { padding: 1rem; }
+        .room-card { max-width: 100%; }
+    }
+</style>
+
+<div class="room-card">
+
+    {{-- Galerie photos --}}
+    @if($room->photos && count($room->photos))
+    <div class="room-gallery">
+        @foreach($room->photos as $photo)
+            <img src="{{ asset('storage/'.$photo->path) }}" alt="Photo chambre">
+        @endforeach
+    </div>
+    @endif
+
+    <div class="room-details">
+        <h2 class="mb-1" style="font-weight:700;">{{ $room->name }}</h2>
+        <div class="mb-2 text-muted">{{ $room->type }} &middot; Capacité : {{ $room->capacity }} pers.</div>
+        <div class="mb-3">{{ $room->description }}</div>
+
+        <div class="equipments-list mb-4">
+            @foreach($room->equipments as $equip)
+                <div>
+                    <span class="equip-icon">
+                        @if($equip->name == "Wifi") <i class="bi bi-wifi"></i>
+                        @elseif($equip->name == "Télévision") <i class="bi bi-tv"></i>
+                        @elseif($equip->name == "Climatisation") <i class="bi bi-snow"></i>
+                        @elseif($equip->name == "Mini-bar") <i class="bi bi-cup-straw"></i>
+                        @else <i class="bi bi-check2-circle"></i>
+                        @endif
+                    </span>
+                    {{ $equip->name }}
+                </div>
+            @endforeach
+        </div>
+
+        <div class="room-price-box">
+            {{ number_format($room->price, 0, ',', ' ') }} XOF / nuit
+        </div>
+
+        <div class="reserve-btn-box">
+            <a href="{{ route('reservations.create', ['room_id' => $room->id]) }}" class="btn btn-lg btn-primary" style="font-weight:600; border-radius:9px;">
+                Réserver cette chambre
+            </a>
+        </div>
+    </div>
+</div>
+@endsection

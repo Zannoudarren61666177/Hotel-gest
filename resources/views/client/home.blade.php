@@ -1,9 +1,8 @@
 @extends('layouts.app')
-@section('title', 'Accueil')
+@section('title', 'Accueil client')
 
 @section('content')
     <style>
-    /* Centrage et espacement du bloc titre */
     .bienvenue-block {
         text-align: center;
         margin: 48px 0 32px 0;
@@ -18,16 +17,14 @@
         color: #444;
         margin-bottom: 0;
     }
-    /* Groupe de boutons d'authentification centré et espacé */
     .auth-btns {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 44px; /* espace entre les boutons */
+        gap: 44px;
         margin-bottom: 48px;
     }
-    /* Styles identiques pour les deux boutons */
-    .cta-btn {
+    .cta-btn, .user-btn {
         background: #1654b8;
         color: #fff;
         border: none;
@@ -44,26 +41,37 @@
         min-width: 170px;
         text-align: center;
     }
-    .cta-btn:hover {
+    .cta-btn:hover, .user-btn:hover {
         background: #14479b;
         transform: translateY(-2px) scale(1.04);
         color: #fff;
         text-decoration: none;
     }
-    /* Espacement général entre sections */
     .spaced-section { margin-bottom: 48px; }
     </style>
 
     <div class="bienvenue-block spaced-section">
-        <h1>Bienvenue sur Hôtel-Gest</h1>
-        <p>Le meilleur de l'hôtel, en quelques clics</p>
+        <h1>
+            Bienvenu sur Hotel-Gest
+            @if($user)
+                , {{ $user->prenom }} {{ $user->nom }}
+            @endif
+        </h1>
+        <p>
+            @if($user)
+                Heureux de vous revoir.<br>
+                N’hésitez pas à explorer nos hôtels ou à gérer vos réservations.
+            @else
+                Découvrez nos hôtels ou inscrivez-vous pour gérer vos réservations.
+            @endif
+        </p>
     </div>
 
     <div class="spaced-section">
         @include('partials.search-form')
     </div>
 
-    <!-- Affichage des hôtels en vedette avec images dynamiques -->
+    <!-- Hôtels en vedette, même code -->
     <div class="spaced-section" style="display: flex; flex-wrap: wrap; gap: 32px;">
         @foreach($featuredHotels as $i => $hotel)
             <div style="flex:1 1 320px;min-width:260px;max-width:32%;">
@@ -78,7 +86,7 @@
         @endforeach
     </div>
 
-    <!-- Présentation des avantages de la plateforme -->
+    <!-- Avantages -->
     <div class="spaced-section" style="display:flex;flex-wrap:wrap;gap:32px;">
         <div style="flex:1 1 300px;min-width:240px;">
             <div style="background:#f8f8fc;padding:1.2em 1.4em;border-radius:10px;box-shadow:0 2px 6px #ccc1;">
@@ -102,13 +110,26 @@
         </div>
     </div>
 
-    <!-- Appel à l'inscription/connexion centré et espacé -->
+    <!-- Boutons personnalisés pour le client -->
+    @if($user)
     <div class="auth-btns spaced-section">
-        <a href="{{ route('register') }}" class="cta-btn">S’inscrire</a>
-        <a href="{{ route('login') }}" class="cta-btn">Se connecter</a>
+        <a href="{{ route('reservations.index') }}" class="user-btn">Mes réservations</a>
+        <a href="{{ route('logout') }}" class="user-btn"
+           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+           Déconnexion
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+            @csrf
+        </form>
     </div>
+    @else
+    <div class="auth-btns spaced-section">
+        <a href="{{ route('login') }}" class="user-btn">Connexion</a>
+        <a href="{{ route('register') }}" class="user-btn">Créer un compte</a>
+    </div>
+    @endif
 
-    <!-- Bloc affichant la note globale et les avis clients dynamiques -->
+    <!-- Note globale et avis, même code -->
     <div class="spaced-section" style="display:flex;flex-wrap:wrap;gap:32px;">
         <div style="flex:1 1 200px;min-width:200px;text-align:center;">
             <div style="font-size:2.7rem;font-weight:bold;">
@@ -142,7 +163,9 @@
         <div style="margin-bottom:8px;font-weight:600;">Avis récents&nbsp;:</div>
         @foreach($avisRecents as $avis)
             <div style="margin-bottom:8px;">
-                <span style="font-weight:500;">{{ $avis->auteur ?? ($avis->user->name ?? 'Visiteur') }}</span>
+                <span style="font-weight:500;">
+                    {{ $avis->auteur ?? ($avis->user->name ?? 'Visiteur') }}
+                </span>
                 <span style="color:#f8c42b;">
                     @for($i=1; $i<=5; $i++)
                         @if($i <= $avis->note)

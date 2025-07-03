@@ -9,6 +9,18 @@ class Hotel extends Model
 {
     use HasFactory;
 
+    // Permet l'assignation en masse de ces champs
+    protected $fillable = [
+        'nom',
+        'adresse',
+        'email',
+        'telephone',
+        'description',
+        'type_chambre',
+        'image_url',
+        'statut',
+    ];
+
     // Relations
     public function rooms()
     {

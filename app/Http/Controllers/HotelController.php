@@ -7,9 +7,22 @@ use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $hotels = Hotel::all();
+        $query = Hotel::query();
+
+        // Filtre par nom (recherche partielle)
+        if ($request->filled('nom')) {
+            $query->where('nom', 'like', '%' . $request->nom . '%');
+        }
+
+        // Filtre par statut
+        if ($request->filled('statut')) {
+            $query->where('statut', $request->statut);
+        }
+
+        $hotels = $query->get();
+
         return view('hotels.index', compact('hotels'));
     }
 
@@ -20,7 +33,35 @@ class HotelController extends Controller
 
     public function store(Request $request)
     {
-        Hotel::create($request->all());
+        // Validation
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telephone' => 'required|string|max:30',
+            'description' => 'required|string',
+            'type_chambre' => 'required|string|in:standard,luxe,suite',
+            'image' => 'required|image|mimes:jpeg,png|max:2048',
+        ]);
+
+        // Stockage de l'image
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('hotels', 'public');
+            $validated['image_url'] = $path;
+        }
+
+        // Création de l’hôtel
+        Hotel::create([
+            'nom' => $validated['nom'],
+            'adresse' => $validated['adresse'],
+            'email' => $validated['email'],
+            'telephone' => $validated['telephone'],
+            'description' => $validated['description'],
+            'type_chambre' => $validated['type_chambre'],
+            'image_url' => $validated['image_url'] ?? null,
+            'statut' => 'en_attente', // par défaut "en attente" à la création
+        ]);
+
         return redirect()->route('hotels.index')->with('success', 'Hôtel ajouté !');
     }
 
@@ -39,7 +80,27 @@ class HotelController extends Controller
     public function update(Request $request, $id)
     {
         $hotel = Hotel::findOrFail($id);
-        $hotel->update($request->all());
+
+        // Validation
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telephone' => 'required|string|max:30',
+            'description' => 'required|string',
+            'type_chambre' => 'required|string|in:standard,luxe,suite',
+            'image' => 'nullable|image|mimes:jpeg,png|max:2048',
+            'statut' => 'nullable|in:en_attente,actif,refuse'
+        ]);
+
+        // Si une nouvelle image est envoyée
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('hotels', 'public');
+            $validated['image_url'] = $path;
+        }
+
+        $hotel->update($validated);
+
         return redirect()->route('hotels.index')->with('success', 'Hôtel mis à jour !');
     }
 

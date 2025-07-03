@@ -9,13 +9,17 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::paginate(10);
         return view('reservations.index', compact('reservations'));
     }
 
     public function create()
     {
-        return view('reservations.create');
+        $users = \App\Models\User::all();
+        $hotels = \App\Models\Hotel::all();
+        $rooms = \App\Models\Room::all();
+
+        return view('reservations.create', compact('users', 'hotels', 'rooms'));
     }
 
     public function store(Request $request)
